@@ -1,0 +1,9 @@
+执行写性能测试, 写入 100000000 条数据，线程256个，写入的字符串长度 32 byte
+数据库写入前目录大小为
+147M	/home/caojunhui/workspace/go/badger
+开始时间：
+2018年 01月 04日 星期四 11:11:57 CST
+结束时间：
+2018年 01月 04日 星期四 11:26:18 CST
+数据库写入后目录大小为
+15G	/home/caojunhui/workspace/go/badger
