@@ -4,7 +4,7 @@
  *
  * 数据库目录位于： /home/caojunhui/workspace/go/badger
  * 测试badger key-value ssd 数据库的查询性能
- * 带2个参数（空格分隔）：随机查询多少条数据   启动同时查询的线程数量
+ * 带3个参数（空格分隔）：随机查询多少条数据   启动同时查询的线程数量      查询的区间
  *
  */
 package main
@@ -53,11 +53,11 @@ func query_job(db *badger.DB, query_chan <-chan []byte, exit_signal chan<- bool)
 
 
 //randam query input routine
-func input_job(size int, query_chan chan<- []byte){
+func input_job(size int, query_chan chan<- []byte, scope int){
   var random_value int = -1
   for i := 1; i <= size; i++ {
       //get random num between 1 and size
-      random_value = rand.Intn(size) + 1
+      random_value = rand.Intn(scope) + 1
       //convert the int into []byte
       query_chan <- []byte(strconv.Itoa(random_value))
       fmt.Printf("输入随机数： %d\n", random_value)
@@ -82,11 +82,11 @@ func main() {
 
   //get input arguments as query size records num and GOMAXPROCS
   args := os.Args[1:]
-  if len(args) < 2 {
-      fmt.Println("输入参数个数有误 2个参数（空格分隔）：随机查询多少条数据   启动同时查询的线程数量")
+  if len(args) < 3 {
+      fmt.Println("输入参数个数有误 3个参数（空格分隔）：随机查询多少条数据   启动同时查询的线程数量  查询的区间")
       return
   }
-  var size, gomaxprocs int = 0, 0
+  var size, gomaxprocs,scope int = 0, 0, 0
   size, err = strconv.Atoi(args[0])
   if err != nil || size <= 0{
       fmt.Println("输入参数 ",args[0]," 有误，请重新输入正整数")
@@ -97,7 +97,13 @@ func main() {
       fmt.Println("输入参数 ",args[1]," 有误，请重新输入正整数")
       return
   }
-  fmt.Printf("随机查询 %d 多少条数据,  同时启动 %d 个线程数量 \n",size, gomaxprocs)
+    scope, err = strconv.Atoi(args[2])
+    if err != nil || scope <= 0{
+        fmt.Println("输入参数 ",args[2]," 有误，请重新输入正整数")
+        return
+    }
+    fmt.Printf("随机查询 %d 多少条数据,  同时启动 %d 个线程数量   查询key值区间【1，x】之间的value \n",size, gomaxprocs,scope)
+
 
   //set the max procs
   runtime.GOMAXPROCS(gomaxprocs)
@@ -105,7 +111,7 @@ func main() {
   //start a random query input thread
   keys_chan := make(chan []byte, gomaxprocs);
   exit_signal := make(chan bool)
-  go input_job(size, keys_chan)
+  go input_job(size, keys_chan,scope)
 
   //start multi write threads
   for i := 0; i < gomaxprocs; i++  {
