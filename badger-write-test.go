@@ -36,26 +36,6 @@ func update(db *badger.DB, key []byte, value []byte) error {
   return err
 }
 
-/*暂时不用
-//read a specific value from database by key
-func view(db *badger.DB, key []byte) (string, error) {
-  //read
-  val,err := db.View(func(txn *badger.Txn) (string ,error) {
-    item, err := txn.Get([]byte("name"))
-    if err != nil {
-      return "", err 
-    }
-    val, err := item.Value()
-    if err != nil {
-      return "",err 
-    }
-    fmt.Printf("The answer is: %s\n", val)
-    return val, nil 
-  })
-  return val, err
-}
-*/
-
 //input routine
 func input_job(size int, data_chan chan<- []byte){
   for i := 1; i <= size; i++ {
@@ -149,27 +129,5 @@ func main() {
   } else {
         fmt.Println("全部写入完成!")
   }
-
-/*
-//update
-err = db.Update(func(txn *badger.Txn) error {
-  err := txn.Set([]byte("name"), []byte("my name is Ove"))
-  return err 
-})
-
-//read
-err = db.View(func(txn *badger.Txn) error {
-  item, err := txn.Get([]byte("name"))
-  if err != nil {
-    return err 
-  }
-  val, err := item.Value()
-  if err != nil {
-    return err 
-  }
-  fmt.Printf("The answer is: %s\n", val)
-  return nil 
-})
-*/
 
 }
