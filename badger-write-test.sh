@@ -8,12 +8,12 @@
 #Author
 #	Ove
 #
-#测试badger写入性能的脚本，需要输入3个参数:写入多少条数据   最大的线程数量    写入的字符串长度单位为byte
+#测试badger写入性能的脚本，需要输入3个参数:写入多少条数据   最大的线程数量    写入的字符串长度单位为byte      数据库文件写入的目录
 #
 
 #测试结果目录、数据库文件目录
 result_dir="badger_test_result"
-badger_dir=/home/caojunhui/workspace/go/badger
+badger_dir=$4
 #检查是否有这个文件夹,没有的话创建
 if [ ! -d "$result_dir" ]; then
   mkdir $result_dir
@@ -23,13 +23,12 @@ if [ ! -d "$badger_dir" ]; then
 fi
 
 #检查参数
-if [ "$#" -lt  3 ]; then
-  echo "输入的参数个数不够，需要输入3个参数:写入多少条数据   最大的线程数量    写入的字符串长度（单位为byte)"
+if [ "$#" -lt  4 ]; then
+  echo "输入的参数个数不够，输入参数个数有误需要输入4个，  写入多少条数据   最大的线程数量    写入的字符串长度单位为byte     数据库文件写入的目录    "
 fi
-echo "执行写性能测试, 写入 $1 条数据，线程$2个，写入的字符串长度 $3 byte" > $result_dir/badger-write-test-$1-$2-$3.result
+echo "执行写性能测试, 写入 $1 条数据，线程$2个，写入的字符串长度 $3 byte   写入目录$4" > $result_dir/badger-write-test-$1-$2-$3.result
 
 #显示数据库原始目录大小
-badger_dir=/home/caojunhui/workspace/go/badger
 echo "数据库写入前目录大小为" >> $result_dir/badger-write-test-$1-$2-$3.result
 du -sh $badger_dir  >> $result_dir/badger-write-test-$1-$2-$3.result 
 

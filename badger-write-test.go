@@ -6,6 +6,14 @@
  * 测试badger key-value ssd 数据库的写入性能
  * 带3个参数（空格分隔）：写入多少条数据   最大的线程数量    写入的字符串长度单位为byte
  *
+ * Badger Write-Benchmark
+ *
+ *
+ * Three Input arguments：
+ *          size            ：   how many records were writed into
+ *          gomaxprocs      :   the gomaxprocs. Setting the max writing thread and setting runtime.GOMAXPROCS(gomaxprocs)
+ *          value_length(bytes)    :   each value with specific length
+ *          Badger DB Directory     : for example "/home/caojunhui/workspace/go/badger"
  */
 package main
 
@@ -81,11 +89,18 @@ func write_job(db *badger.DB, input <-chan []byte, value []byte, exit_signal cha
 }
 
 func main() {
-  // Open the Badger database located in the /tmp/badger directory.
+    //get input arguments as writed records num and GOMAXPROCS
+    args := os.Args[1:]
+    if len(args) < 4 {
+        fmt.Println("输入参数个数有误需要输入4个，文件目录      写入多少条数据   最大的线程数量    写入的字符串长度单位为byte")
+        return
+    }
+
+    // Open the Badger database located in the /tmp/badger directory.
   // It will be created if it doesn't exist.
   opts := badger.DefaultOptions
-  opts.Dir = "/home/caojunhui/workspace/go/badger"
-  opts.ValueDir = "/home/caojunhui/workspace/go/badger"
+  opts.Dir = args[3]
+  opts.ValueDir = args[3]
   db, err := badger.Open(opts)
   if err != nil {
           fmt.Println("创建数据库文件错误"," ",opts.Dir," ",opts.ValueDir)
@@ -93,12 +108,6 @@ func main() {
   }
   defer db.Close()
 
-  //get input arguments as writed records num and GOMAXPROCS
-  args := os.Args[1:]
-  if len(args) < 3 {
-      fmt.Println("输入参数个数有误需要输入3个，写入多少条数据   最大的线程数量    写入的字符串长度单位为byte")
-      return
-  }
   var size, gomaxprocs, data_len int = 0, 0, 0
   size, err = strconv.Atoi(args[0])
   if err != nil || size <= 0{
