@@ -102,7 +102,7 @@ func main() {
         fmt.Println("输入参数 ",args[2]," 有误，请重新输入正整数")
         return
     }
-    fmt.Printf("随机查询 %d 多少条数据,  同时启动 %d 个线程数量   查询key值区间【1，x】之间的value \n",size, gomaxprocs,scope)
+    fmt.Printf("随机查询 %d 多少条数据,  同时启动 %d 个线程数量   查询key值区间【1，%d】之间的value \n",size, gomaxprocs,scope)
 
 
   //set the max procs
@@ -125,27 +125,5 @@ func main() {
   } else {
         fmt.Println("全部查询完成!")
   }
-
-/*
-//update
-err = db.Update(func(txn *badger.Txn) error {
-  err := txn.Set([]byte("name"), []byte("my name is Ove"))
-  return err 
-})
-
-//read
-err = db.View(func(txn *badger.Txn) error {
-  item, err := txn.Get([]byte("name"))
-  if err != nil {
-    return err 
-  }
-  val, err := item.Value()
-  if err != nil {
-    return err 
-  }
-  fmt.Printf("The answer is: %s\n", val)
-  return nil 
-})
-*/
 
 }
