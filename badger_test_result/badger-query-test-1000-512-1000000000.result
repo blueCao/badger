@@ -1,0 +1,9 @@
+执行badger查询性能测试, 随机查询 1000 条数据，启动查询线程512个，查询区间【1，1000000000】
+数据库查询前目录大小为
+212G	/home/caojunhui/workspace/go/badger
+开始时间：
+2018年 01月 27日 星期六 04:39:20 CST
+结束时间：
+2018年 01月 27日 星期六 04:40:27 CST
+数据库查询后目录大小为
+212G	/home/caojunhui/workspace/go/badger
